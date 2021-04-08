@@ -19,13 +19,14 @@ public class Vertices {
         this.max_weight = max_weight;
     }
 
+
+
     public void setLong_path(int long_path) {
         this.long_path = long_path;
     }
 
     private double show_y = 0.0;
     private int number_vertice;
-    private boolean bridge=false;
 
     public boolean isArculation_point() {
         return arculation_point;

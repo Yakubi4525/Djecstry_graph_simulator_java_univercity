@@ -9,10 +9,18 @@ public class Arcs {
     private double show_y = 0.0;
     private double show_x2 = 0.0;
     private double show_y2 = 0.0;
+    public Color color;
     private int long_path=0;
     int from_vertice;
     int  to_vertice;
+    private boolean bridge=false;
+    public boolean isBridge() {
+        return bridge;
+    }
 
+    public void setBridge(boolean bridge) {
+        this.bridge = bridge;
+    }
     public double getShow_x2() {
         return show_x2;
     }
@@ -29,7 +37,6 @@ public class Arcs {
         this.show_y2 = show_y2;
     }
 
-    public Color color;
     public double getShow_x() {
         return show_x;
     }
@@ -76,7 +83,8 @@ public class Arcs {
 
     }
     public void show(GraphicsContext gc){
-        gc.setFill(getColor());
+        gc.setStroke(getColor());
+        gc.setLineWidth(3);
         gc.strokeLine(getShow_x()+12.5, getShow_y()+12.5, getShow_x2()+12.5, getShow_y2()+12.5);
     }
 

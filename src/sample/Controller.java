@@ -43,6 +43,8 @@ public class Controller {
     int q=0;// Количество ребер
     int[][] matrix_smeghnost;
     int radius_graph=100000;// радиус графа
+    int vertice_1;
+    int vertice_2;
 
     @FXML
     private ResourceBundle resources;
@@ -94,6 +96,122 @@ public class Controller {
 
     @FXML
     void Bridge_function(ActionEvent event) {
+        if(1==1) {
+            create_matrix();
+            show_matrix(p, matrix_smeghnost);
+            textArea.appendText("\n1) Для нахождения мостов \nв цикле рассмотрим каждую ребро,\n" +
+                    "и удалим данную ребро из нашей\n матрица. В полученной матрице \n" +
+                    "вычилсим расстояние между\n всеми вершинами. Если расстояние \n" +
+                    "между некоторыми вершинами \n стало 0, то наш граф разделена\nна блоки, и следовательно,\n вершина является точкой сочления\n" +
+                    "мостом\n\n");
+            for (Vertices vertices : VerticeList) {
+                vertices.setColor(Color.BLACK);
+                vertices.show(gc);
+            }
+            for (Arcs arcs : ArcssList) {
+                arcs.setColor(Color.BLACK);
+                arcs.show(gc);
+            }
+
+
+            int[][] matr = new int[p][p];
+            for (int i = 0; i < p; i++){     //создание копии матрицы смежности для дальнейшей работы с ней
+                for (int j = 0; j < p; j++)
+                    matr[i][j] = matrix_smeghnost[i][j];
+            }
+
+            for(int v=0; v<q; v++) {
+                for (int i = 0; i < p; i++)     //переопределение массива matr
+                    for (int j = 0; j < p; j++)
+                        matr[i][j] = matrix_smeghnost[i][j];
+                textArea.appendText("Рассмотрим ребро №"+v+"\n");
+                textArea.appendText("При удалении данного ребра,матрица смежности имеет вид\n");
+
+                    vertice_1=arcs.getFrom_vertice();
+                    vertice_2=arcs.getTo_vertice();
+                    matr[vertice_1][vertice_2] = 0;
+                    matr[vertice_2][vertice_1] = 0;
+
+                for (int i = 0; i < p; i++) {
+                    for (int j = 0; j < p; j++)
+                        textArea.appendText("\t"+matr[i][j]);
+                    textArea.appendText("\n");
+                }    //создание копии матрицы смежности для окончательного результата
+
+
+
+                int[][] result = new int[p][p];
+                for (int i = 0; i < p; i++)     //создание копии матрицы смежности для окончательного результата
+                    for (int j = 0; j < p; j++)
+                        result[i][j] = matr[i][j];
+
+
+                for (int t = 2; t <= q; t++)   //возведение матрицы смежности в нужную степень
+                {
+                    int[][] mat = new int[p][p];
+                    for (int i = 0; i < p; i++) //инициализация матрицы matr нулевыми значениями
+                        for (int j = 0; j < p; j++)
+                            mat[i][j] = 0;
+
+                    for (int i = 0; i < p; i++)     //перемножение матриц
+                    {
+                        for (int j = 0; j < p; j++) {
+                            int sum = 0;
+                            for (int k = 0; k < p; k++) {
+                                sum += matr[i][k] * matr[k][j];
+                            }
+                            mat[i][j] = sum;
+                        }
+                    }
+
+                    for (int i = 0; i < p; i++)     //перенос временных значений из массива mat  в массив matr
+                        for (int j = 0; j < p; j++) {
+                            matr[i][j] = mat[i][j];
+                            if (matr[i][j] != 0 && result[i][j] == 0 && i != j)
+                                result[i][j] = t;
+                        }
+
+                }
+                textArea.appendText("Расстояние между вершинами\n");
+
+                for (int i = 0; i < p; i++)     //вывод матрицы смежности в степени lg на экран
+                {
+                    for (int j = 0; j < p; j++)
+                        textArea.appendText("\t" + result[i][j]);
+                    textArea.appendText("\n");
+                }
+                for (int j = 0; j < p; j++) {
+                    if (v<p){
+                        result[v][j] = 1;
+                        result[j][v] = 1;
+                    }//Заполняем единичками, потому что они эти вершини мы удалили и следовательно на проверку они не должни попасть
+
+                }
+                for (int i = 0; i < p; i++)
+                {
+                    for (int j = 0; j < p; j++){
+                        if (result[i][j] ==0 && i!=j ){
+                            ArcssList.get(v).setBridge(true);
+                            break;
+                        }
+                    }
+
+                }
+
+
+            }
+            textArea.appendText("Мосты, ребра с номерами вершин:\n");
+            for (Arcs arcs : ArcssList) {
+                if(arcs.isBridge()==true){
+                    arcs.setColor(Color.RED);
+                    arcs.show(gc);
+                    System.out.println(arcs.getColor());
+                    textArea.appendText("\t"+"("+arcs.from_vertice+","+arcs.to_vertice+")");
+                }
+            }
+
+        }
+
 
 
     }
@@ -480,7 +598,7 @@ public class Controller {
                     for (int j = 0; j < p; j++){
                         if (result[i][j] ==0 && i!=j ){
                             VerticeList.get(v).setArculation_point(true);
-                            System.out.println("true");
+                            break;
                         }
                     }
 
