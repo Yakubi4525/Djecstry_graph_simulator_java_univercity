@@ -3,4 +3,4 @@
 
 Написано на JavaFX
 
-![test](https://github.com/Yakubi4525/newsapp_clean_architecture/blob/main/assets/gif/20210408_120836.gif)
+![test](https://github.com/Yakubi4525/Djecstry_graph_simulator_java_univercity/blob/main/src/sample/graph_simulator.gif)
